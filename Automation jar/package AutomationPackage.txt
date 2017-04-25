@@ -1,0 +1,197 @@
+package AutomationPackage;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import java.util.ArrayList;
+import java.util.List;
+
+public class txtSearchItems {
+	public static WebDriver driver;
+	public static WebElement e;
+	public static List<Integer> count = new ArrayList<Integer>();
+	public static int count2=0;
+
+	public static void main(String[] args) {
+		List<WebElement> list = null;
+		list = txtSearchItems.WriteAndExecute("bling");
+		//System.out.println(list.size());
+		// System.out.println(list);
+		for (WebElement el : list) {
+
+			if (txtSearchItems.isPrime(el)) {
+				System.out.println(txtSearchItems.getName(el));
+				System.out.println(txtSearchItems.getPrice(el));
+				
+			}
+			txtSearchItems.clickOnItem();
+			txtSearchItems.AddToCart();
+			txtSearchItems.login();
+		}
+
+	}
+
+	public static List<WebElement> WriteAndExecute(String str) {
+		System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
+		// WebDriver driver;
+		ChromeOptions chromeOptions = new ChromeOptions();
+		chromeOptions.addArguments("--start-maximized");
+		driver = new ChromeDriver(chromeOptions);
+		driver.get("https://www.amazon.com/");
+		WebElement element;
+
+		// click on Today's Deals
+		element = driver.findElement(By.linkText("Today's Deals"));
+		element.click();
+		List<WebElement> productList = new ArrayList<WebElement>();
+
+		// int size2 = driver
+		// .findElements(
+		// By.xpath("//span[@class='a-size-base a-color-base dealTitleTwoLine hoverVisible hiddenCss singleCellTitle autoHeight']"))
+		// .size();
+
+		// productList = driver
+		// .findElements((By.xpath("//div[contains(@id, '100_dealView')]")));
+		//
+
+		// System.out.println(size2);
+
+		for (int i = 1; i < 33; i++) {
+			// System.out
+			// .println((driver.findElement(By.xpath(String
+			// .format("(//span[@class='a-size-base a-color-base dealTitleTwoLine hoverVisible hiddenCss singleCellTitle autoHeight'])[%s]",
+			// i))).getAttribute("innerHTML")));
+			element = driver.findElement(By.xpath(String.format(
+					"(//div[contains(@id, '100_dealView')])[%s]", i)));
+			// System.out.println(element.getAttribute("innerHTML"));
+			if (element.getAttribute("innerHTML").toLowerCase()
+					.contains(str.toLowerCase())) {
+				productList.add(element);
+				count.add(i);
+				// System.out.println(element.getAttribute("innerHTML"));
+				// System.out.println(element.findElement(By.id("dealTitle")).getAttribute("innerHTML"));
+
+				// System.out.println(element.findElement(By.xpath("(//span[@class='a-size-base a-color-base dealTitleTwoLine hoverVisible hiddenCss singleCellTitle autoHeight'])")).getAttribute("innerHTML"));
+				// element = null;
+
+				// if ((driver
+				// .findElement(By.xpath(String
+				// .format("(//span[@class='a-size-base a-color-base dealTitleTwoLine hoverVisible hiddenCss singleCellTitle autoHeight'])[%s]",
+				// i))).getAttribute("innerHTML"))
+				// .toLowerCase().contains(str.toLowerCase())) {
+				// productList
+				// .add((driver.findElement(By.xpath(String.format("(//div[contains(@id, '100_dealView')])[%s]",i+1)))));
+				// productList
+				// .add((driver.findElement(By.xpath("(//div[contains(text(), str)])"))));
+				// productList
+				// .add((driver.findElement(By.xpath(String
+				// .format("(//span[@class='a-size-base a-color-base dealTitleTwoLine hoverVisible hiddenCss singleCellTitle autoHeight'])[%s]",
+				// i)))));
+			}
+		}
+
+		// productList = driver
+		// .findElements(By
+		// .className("a-section dealContainer"));
+
+		// productList = driver
+		// .findElements(By
+		// .xpath("//span[@class='a-size-base a-color-base dealTitleTwoLine hoverVisible hiddenCss singleCellTitle autoHeight']"));
+		//
+		// int size = productList.size();
+		// size--;
+		// System.out.println(size);
+
+		// for(int i = 0; i<size; i++){
+		// System.out.println(i);
+		// System.out.println(productList.get(i).getAttribute("innerHTML").toLowerCase());
+		// if
+		// (!(productList.get(i).getAttribute("innerHTML").toLowerCase().contains(str.toLowerCase())))
+		// {
+		// productList.remove(i);
+		//
+		// }
+		// }
+
+		// for (WebElement el : productList) {
+		// System.out.println(el.getAttribute("innerHTML").toLowerCase());
+		// if (!el.getAttribute("innerHTML").toLowerCase()
+		// .contains(str.toLowerCase())) {
+		// productList.remove(el);
+		// }
+		// }
+		return productList;
+	}
+
+	public static boolean isPrime(WebElement el) {
+
+		//String a = el.findElement(By.id("dealImage")).getText();
+		//String a = el.findElement(By.id("dealImage")).getAttribute("innerHTML");
+		String a = el.findElement(By.xpath(String.format(
+				"(//span[contains(@class, 'a-color-base solidBadgeText')])[%s]", count.get(count2)))).getAttribute("innerHTML");
+
+
+		if (a.toLowerCase().contains(("prime").toLowerCase())) {
+			return true;
+		}
+
+		// if (el.findElement(By
+		// .xpath("(//span[@class='a-size-base a-color-base dealTitleTwoLine hoverVisible hiddenCss singleCellTitle autoHeight'])")).getText()
+		// != null) {
+		// if (el.findElement(
+		// By.xpath("(//span[@class='a-size-small a-color-secondary'])"))
+		// .getAttribute("innerHTML").toLowerCase()
+		// .contains(("prime").toLowerCase())) {
+		// return true;
+		// }
+		// }
+
+		return false;
+	}
+
+	public static String getName(WebElement product) {
+		String Name = null;
+		Name = product.findElement(By.id("dealTitle"))
+				.getAttribute("innerHTML");
+		return Name;
+	}
+	
+	public static String getPrice(WebElement product) {
+		String Name = null;
+		Name = product.findElement(By.xpath(String.format(
+				"(//span[contains(@class, 'a-size-medium a-color-base inlineBlock unitLineHeight')])[%s]", count.get(count2)))).getAttribute("innerHTML");
+		count2++;
+		return Name;
+
+	}
+
+	public static void clickOnItem() {
+		// element.findElement(By.partialLinkText(element.getAttribute("innerHTML"))).click();
+		// element.findElement(By.id("dealTitle")).click();
+		// element.findElement(By.xpath("//a[@class='a-link-normal']"))
+		// .click();
+		e.findElement(By.id("dealImage")).click();
+		// element.findElement(By.xpath("//span[@id='a-size-base a-color-link dealTitleTwoLine restVisible singleCellTitle autoHeight']"))
+		// .click();
+	}
+
+	public static void AddToCart() {
+			//e = driver.findElement(By.partialLinkText("Add to Cart"));
+			e = driver.findElement(By.partialLinkText("Join Prime"));
+			e.click();
+		//txtSearchItems.login();
+
+	}
+
+	public static void login() {
+		WebElement e;
+		e = driver.findElement(By.xpath("(//input[@type='email'])"));
+		e.sendKeys("username");
+		e = driver.findElement(By.xpath("(//input[@type='password'])"));
+		e.sendKeys("password");
+		e.submit();
+
+	}
+}
